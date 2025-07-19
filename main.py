@@ -1,3 +1,4 @@
+import mysql.connector
 from flask import Flask , make_response, jsonify, request
 from bd import Carros
 
