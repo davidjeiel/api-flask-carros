@@ -54,8 +54,8 @@ def lista_carros(Carros):
     return lista
 
 
-@app.route('/carros', methods=['POST'])
-def create_carro():
+@app.route('/carros_json', methods=['POST'])
+def create_carro_json():
     novo_carro = request.json
     novo_carro['id'] = len(Carros) + 1  # Assign a new ID based on the current length of the list
     Carros.append(novo_carro)
@@ -66,6 +66,23 @@ def create_carro():
         ), 
         201
     )    
+
+@app.route('/carros_db', methods=['POST'])
+def create_carros_db():
+    mycarros = mydb.cursor()
+    sql = "INSERT INTO carros (marca, modelo, ano) VALUES (%s, %s, %s)"
+    val = (request.json['marca'], request.json['modelo'], request.json['ano'])
+    mycarros.execute(sql, val)
+    mydb.commit()
+    
+    return make_response(
+        jsonify(
+            message="Carro adicionado com sucesso!",
+            carro=request.json
+        ), 
+        201
+    )
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
