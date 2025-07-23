@@ -1,4 +1,4 @@
-from flask import Flask , make_response, jsonify, request
+from flask import Flask , make_response, jsonify, request, render_template
 from bd import Carros
 import mysql.connector
 
@@ -29,7 +29,7 @@ def get_carros_db():
     mycarros = mydb.cursor(dictionary=True)
     mycarros.execute("SELECT * FROM carros")
     Carros = mycarros.fetchall()    
-    
+
     return make_response( 
         jsonify(
             message="Lista de carros",
@@ -82,6 +82,14 @@ def create_carros_db():
         ), 
         201
     )
+
+@app.route('/')
+def index():
+    mycarros = mydb.cursor(dictionary=True)
+    mycarros.execute("SELECT * FROM carros")
+    Carros = mycarros.fetchall()  
+
+    return render_template('index.html', carros=Carros)
 
 
 if __name__ == '__main__':

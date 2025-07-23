@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Página usando o flask</title>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+    </head>
+    <body>
+        <h1>LISTA DOS CARROS</h1>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Ano</th>
+                
+            </tr>
+            <tbody>
+                {% for carro in carros %}
+                <tr>
+                    <td>{{ carro.id }}</td>
+                    <td>{{ carro.marca }}</td>
+                    <td>{{ carro.modelo }}</td>
+                    <td>{{ carro.ano }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+       
+        <script src="/static/script.js"></script>
+        <footer>
+            <p>&copy; Página em Flask</p>
+        </footer>
+    </body>
+</html>
