@@ -1,96 +1,13 @@
-from flask import Flask , make_response, jsonify, request, render_template
-from bd import Carros
-import mysql.connector
-
-mydb = mysql.connector.connect(
-    host="db",
-    user="root",
-    password="root",
-    database="Pycodebr"
-)
+from flask import Flask 
+from routes.carros import carros_routes
+from routes.cliente import cliente_routes, cliente_routes_api
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
-@app.route('/carros_json', methods=['GET'])
-def get_carros_json():
-
-    return make_response( 
-        jsonify(
-            message="Lista de carros",
-            carros=Carros
-        ), 
-        200
-    )
-
-
-@app.route('/carros_db', methods=['GET'])
-def get_carros_db():
-    mycarros = mydb.cursor(dictionary=True)
-    mycarros.execute("SELECT * FROM carros")
-    Carros = mycarros.fetchall()    
-
-    return make_response( 
-        jsonify(
-            message="Lista de carros",
-            carros=Carros
-        ), 
-        200
-    )
-
-
-def lista_carros(Carros):    
-    lista = list()
-    for carro in Carros:
-        lista.append(
-            {
-                'id': carro[0],
-                'marca': carro[1],
-                'modelo': carro[2],
-                'ano': carro[3]
-            }
-        )
-
-    return lista
-
-
-@app.route('/carros_json', methods=['POST'])
-def create_carro_json():
-    novo_carro = request.json
-    novo_carro['id'] = len(Carros) + 1  # Assign a new ID based on the current length of the list
-    Carros.append(novo_carro)
-    return make_response(
-        jsonify(
-            message="Carro adicionado com sucesso!",
-            carro=novo_carro
-        ), 
-        201
-    )    
-
-@app.route('/carros_db', methods=['POST'])
-def create_carros_db():
-    mycarros = mydb.cursor()
-    sql = "INSERT INTO carros (marca, modelo, ano) VALUES (%s, %s, %s)"
-    val = (request.json['marca'], request.json['modelo'], request.json['ano'])
-    mycarros.execute(sql, val)
-    mydb.commit()
-    
-    return make_response(
-        jsonify(
-            message="Carro adicionado com sucesso!",
-            carro=request.json
-        ), 
-        201
-    )
-
-@app.route('/')
-def index():
-    mycarros = mydb.cursor(dictionary=True)
-    mycarros.execute("SELECT * FROM carros")
-    Carros = mycarros.fetchall()  
-
-    return render_template('index.html', carros=Carros)
-
+app.register_blueprint(carros_routes, url_prefix='/carros')
+app.register_blueprint(cliente_routes, url_prefix='/clientes')
+app.register_blueprint(cliente_routes_api, url_prefix='/clientes/api')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

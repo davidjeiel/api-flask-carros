@@ -1,3 +1,5 @@
+name: flask-app
+
 services:
   web:
     build: .
@@ -13,6 +15,16 @@ services:
       - MYSQL_DATABASE=Pycodebr
     networks:
       - flask-network
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+          target: /app
+          ignore:
+            - .git/
+            - .venv/
+            - __pycache__/
+            - "*.pyc"
 
   db:
     image: mysql:8.0
@@ -24,7 +36,7 @@ services:
       - MYSQL_CHARACTER_SET_SERVER=utf8
       - MYSQL_COLLATION_SERVER=utf8_general_ci
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      - ./database:/docker-entrypoint-initdb.d
       - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]

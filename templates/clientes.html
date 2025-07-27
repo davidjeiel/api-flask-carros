@@ -1,0 +1,34 @@
+{% include  'header.html' %}
+
+    <div>
+        <h1 class="text-center">LISTA DOS CLIENTES</h1>
+        <table class="table table-striped table-hover">
+            <tr class="table-dark active">
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Ações</th>
+            </tr>
+            <tbody>
+                {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente.id }}</td>
+                        <td>{{ cliente.nome }}</td>
+                        <td>{{ cliente.email }}</td>
+                        <td>
+                            <button 
+                                class="btn btn-primary" 
+                                onclick="window.location.href='/clientes/{{ cliente.id }}'"
+                                title="Detalhes do cliente {{ cliente.nome }}"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top" >
+                                Detalhes
+                            </button>                            
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% include  'footer.html' %}
